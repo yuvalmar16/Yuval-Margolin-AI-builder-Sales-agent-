@@ -16,7 +16,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Environment variables
+
+Copy `.env.example` to `.env.local` and fill in whichever values you have. Every variable is optional — see the comments in `.env.example` for what each one enables and what the app falls back to when it's unset.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+## Running with Docker
+
+```bash
+docker build \
+  --build-arg NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url> \
+  --build-arg NEXT_PUBLIC_VAPI_PUBLIC_KEY=<your-vapi-public-key> \
+  -t alta-app .
+
+docker run -p 3000:3000 --env-file .env.local alta-app
+```
+
+`NEXT_PUBLIC_*` variables are inlined into the client JS bundle at build time, so they're passed as `--build-arg`, not through `--env-file`. Every other variable (`OPENAI_API_KEY`, `OPENAI_MODEL`, `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_CALENDAR_*`) is read server-side at request time and comes from `--env-file` at `docker run`. See `.env.example` for the full list and what each one enables.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
